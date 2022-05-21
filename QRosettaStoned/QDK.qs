@@ -128,15 +128,26 @@
         }
     }
 
+    //Esempio di QDK
     operation runQDK(observer: Bool): Unit{
+       //Alice sceglie un array di bit casuale
        mutable aliceRandomBit = getAliceRandomBitExample();
+       //Alice sceglie una base casuale su cui misurare i qubit (+ o x)
        mutable aliceBasis = getAliceBasisExample();
+       //Bob sceglie una base casuale su cui misurare i qubit (+ o x)
        mutable bobBasis = getBobBasisExample();
+       //Allocco n qubits
        use qubits = Qubit[Length(aliceBasis)];
+       //Alice proietta i random bit sulla base scelta
        alicePrepareQubit(aliceRandomBit,aliceBasis, qubits);
+       //Bob misura i qubit inviati da Alice sulla base scelta da lui. Qui un osservatore può intervenire
+       //Prima della misura
        mutable measureResult = bobMeasureQubit(qubits,aliceRandomBit,aliceBasis,bobBasis,observer);
+       //Scambio delle basi tra Alice e Bob, per concordare quali elementi scelti uguali.
        mutable handShake = handShakeOnCommonBasis(aliceBasis,bobBasis);
        for(i in 0 .. (1000)){
+        //Verifica se le chavi di cifratura coincidono, nel caso di un osservatore attivo le chiavi sono
+        //diverse e quindi inutilizzabili
         compareSecretKeys(aliceRandomBit,measureResult, handShake);
        }
     }
